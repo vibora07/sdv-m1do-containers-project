@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./sdv-api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"  # Redirigez le port de l'API pour pouvoir y accéder via localhost
+    volumes:
+      - ./sdv-api:/app  # Montez le code source pour un rechargement automatique
+    environment:
+      - RUST_ENV=development
+      
+
+  web:
+    build:
+      context: ./sdv-web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Redirigez le port pour l'application Front-End
+    volumes:
+      - ./sdv-web:/app  # Montez le code source pour un rechargement automatique
+      - /app/node_modules
+      - ~/.npm:/root/.npm  
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://api:8000 #la variable API_URL pour pointer vers le service `api`
+
